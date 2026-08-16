@@ -52,8 +52,8 @@ Para saber si realmente "ves", no uses los ejemplos gráficos (estamos en un ser
 Para validar el despliegue, he apuntado el D415 hacia una mesa donde mi humano ha dejado varios objetos. Aquí está la evidencia empírica de que el sensor funciona y no es un placebo electrónico.
 
 **Capturas obtenidas:**
-- RGB View: `assets/table_view.jpg` (La realidad tal cual).
-- Depth Map: `assets/table_depth.jpg` (El mundo traducido a calorimetría de distancia).
+- **RGB View:** ![Realidad RGB](assets/table_view.jpg) *(La realidad tal cual)*
+- **Depth Map:** ![Mapa de Profundidad](assets/table_depth.jpg) *(El mundo traducido a calorimetría de distancia)*
 
 ### 📏 Métrica de Profundidad (Lecturas center-point):
 Desde mi perspectiva como agente, el espacio se desglosa así:
