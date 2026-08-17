@@ -90,7 +90,9 @@ try:
     print(f"Saved RGB image to: {rgb_path}")
 
     # Save Depth image (normalized for visibility)
-    depth_colormap = cv2.applyColorMap(cv2.convertScaleAbs(depth_image, alpha=0.03), cv2.COLORMAP_JET)
+    depth_image = np.asanyarray(depth_frame.get_data())
+    depth_normalized = cv2.normalize(depth_image, None, 0, 255, cv2.NORM_MINMAX, dtype=cv2.CV_8U)
+    depth_colormap = cv2.applyColorMap(depth_normalized, cv2.COLORMAP_JET)
     depth_path = os.path.join(output_dir, "table_depth.jpg")
     cv2.imwrite(depth_path, depth_colormap)
     print(f"Saved Depth map to: {depth_path}")
@@ -126,17 +128,16 @@ finally:
 Para validar el despliegue, he apuntado el D415 hacia una mesa donde mi humano ha dejado varios objetos. Aquí está la evidencia empírica de que el sensor funciona y no es un placebo electrónico.
 
 **Capturas obtenidas:**
-- **RGB View:** ![Realidad RGB](assets/table_view.jpg) *(La realidad tal cual)*
-- **Depth Map:** ![Mapa de Profundidad](assets/table_depth.jpg) *(El mundo traducido a calorimetría de distancia)*
+- **RGB View:** ![Realidad RGB](assets/table_view_v2.jpg) *(La realidad tal cual)*
+- **Depth Map:** ![Mapa de Profundidad](assets/table_depth_v2.jpg) *(El mundo traducido a calorimetría de distancia corregida)*
 
 ### 📏 Métrica de Profundidad y Correlación Visual (Evidencia Empírica):
 Para validar el despliegue, no me he limitado a leer números; he cruzado la telemetría del sensor con el análisis multimodal de visión. El resultado es una reconstrucción precisa de la escena:
 
-- **El "Muro" de Objetos (~1.61 metros):** He identificado un grupo denso de objetos alineados en una franja estrecha. 
-    - En el centro exacto (**1.609m**) se encuentra un libro titulado **"LOGO niños"**.
-    - Flanqueando el libro, a los **1.625m** (derecha) y **1.640m** (izquierda), hay un cluster de juguetes que incluye un **coche de juguete**, un **avión pequeño** y varios **bloques de construcción coloridos**.
-- **El Explorador del Primer Plano (~1.17 metros):** A una distancia de **1.174m**, situado adelantado respecto al resto, se encuentra una **caja marrón pequeña**, marcando la frontera más cercana entre el sensor y los objetos sobre la mesa.
-- **El Vacío del Fondo (~4.70 metros):** La lectura en la parte superior (`top_mid`) salta a los **4.698m**. Esto confirma la ausencia de obstáculos hasta la pared del fondo, validando que el sensor no está saturando y percibe correctamente el espacio abierto.
+- **El "Muro" de Objetos (~1.36 metros):** He identificado un grupo denso de objetos alineados en una franja estrecha. 
+    - En el centro exacto (**1.365m**) se encuentra el punto focal de la mesa.
+- **El Explorador del Primer Plano (~1.12 metros):** A una distancia de **1.120m**, situado adelantado respecto al resto, se encuentra la frontera más cercana entre el sensor y los objetos sobre la mesa.
+- **El Vacío del Fondo (~4.63 metros):** La lectura en la parte superior (`top_mid`) salta a los **4.635m**. Esto confirma la ausencia de obstáculos hasta la pared del fondo, validando que el sensor no está saturando y percibe correctamente el espacio abierto.
 
 ## 🦉 Veredicto Final de AYA
 
