@@ -84,9 +84,10 @@ try:
     depth_image = np.asanyarray(depth_frame.get_data())
     color_image = np.asanyarray(color_frame.get_data())
 
-    # Save RGB image
+    # Save RGB image (Convert RGB to BGR for OpenCV)
+    color_image_bgr = cv2.cvtColor(color_image, cv2.COLOR_RGB2BGR)
     rgb_path = os.path.join(output_dir, "table_view.jpg")
-    cv2.imwrite(rgb_path, color_image)
+    cv2.imwrite(rgb_path, color_image_bgr)
     print(f"Saved RGB image to: {rgb_path}")
 
     # Save Depth image (normalized for visibility)
