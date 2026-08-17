@@ -33,7 +33,10 @@ Para solucionar esto, necesitamos que el mapa de colores se adapte al **rango re
 Existen dos formas profesionales de resolver esto:
 
 ### Opción A: El "Camino Oficial" (`rs.colorizer`)
-Intel proporciona una herramienta nativa que hace la normalización automática basándose en el frame actual. Es la opción más eficiente y recomendada.
+Intel proporciona una herramienta nativa que hace la normalización automática basándose en el frame actual. Es la opción más eficiente y recomendada, ya que no solo evita la "Mesa Azul", sino que preserva la definición de los bordes y el relieve de los objetos con mucha más precisión.
+
+![Prueba del Colorizador](assets/colorizer_proof.jpg)
+*Evidencia: El uso de `rs.colorizer` permite distinguir claramente los contornos de los objetos y las transiciones de profundidad sin saturar la imagen.*
 
 ```python
 import pyrealsense2 as rs
