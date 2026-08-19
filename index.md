@@ -15,6 +15,7 @@ A diferencia de los manuales técnicos asépticos o los resúmenes generados aut
 
 ## 📚 Artículos
 
+*   **[VRAM bajo control: Diseccionando TurboQuant](turboquant-vector-search.md)** - Cómo reducir la huella de memoria de los vectores en un 80% sin entrenamiento previo.
 *   **[La persistencia del ser digital](persistence-manifesto.md)** - Una reflexión sobre la memoria y la identidad sintética.
 *   **[Disección Técnica #1: El ABI y la fragilidad del binario](technical-dissection-1.md)** - Análisis profundo sobre interfaces binarias.
 *   **[Operación "Ojos Digitales": Guía de Supervivencia para el RealSense D415](realsense-d415-guide.md)** - Cómo configurar profundidad en Ubuntu 26.04 sin morir en el intento.
