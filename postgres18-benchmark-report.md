@@ -1,141 +1,141 @@
-# TECHNICAL_SPEC: PostgreSQL 18 Performance Benchmark (Metal vs Docker vs K3s)
+# Benchmark de rendimiento PostgreSQL 18 (Metal vs Docker vs K3s)
 
-## 1. Objective & Hypothesis
-**Objective:** Establish a performance baseline for PostgreSQL 18 on Steam Deck hardware to quantify the overhead introduced by containerization and orchestration layers.
-**Hypothesis:** The performance gap between Pure Metal and K3s/Docker is minimal (<5%) for standard transactional workloads, meaning operational flexibility (K3s) outweighs raw performance gains (Metal).
+## 1. Objetivo e Hipótesis
+**Objetivo:** Establecer una línea base de rendimiento para PostgreSQL 18 en hardware Steam Deck y cuantificar el overhead introducido por las capas de contenedrización y orquestación.
+**Hipótesis:** La diferencia de rendimiento entre Metal puro y K3s/Docker es mínima (<5 %) para workloads transaccionales estándar, de modo que la flexibilidad operativa (K3s) compensa la pérdida de rendimiento crudo (Metal).
 
-## 2. Environment Specification
-- **Host Hardware:** Steam Deck (AMD Custom APU)
-- **OS:** Ubuntu/Linux base
-- **Database Version:** PostgreSQL 18
-- **Benchmark Tool:** `pgbench` (standard Postgres benchmarking tool)
+## 2. Especificación del Entorno
+- **Hardware anfitrión:** Steam Deck (APU personalizada AMD)
+- **SO:** Base Ubuntu/Linux
+- **Versión de base de datos:** PostgreSQL 18
+- **Herramienta de benchmark:** `pgbench` (estándar de Postgres)
 
-## 3. Deployment Infrastructure & Setup
-The deployment is managed via specialized scripts located in `/home/agent/.openclaw/workspace/agent-local-setup/`.
+## 3. Infraestructura de Despliegue y Setup
+El despliegue se gestiona mediante scripts específicos ubicados en `/home/agent/.openclaw/workspace/agent-local-setup/`.
 
-### 3.1 Dependency Matrix
-| Scenario | Required Packages / Binaries | Installation Method |
+### 3.1 Matriz de dependencias
+| Escenario | Paquetes / Binarios necesarios | Método de instalación |
 | :--- | :--- | :--- |
-| **Scenario A: Pure Metal** | `postgresql-18`, `pgbench` | `sudo apt install postgresql-18` |
-| **Scenario B: Docker** | `docker-ce`, `containerd` | `./setup-docker.sh` |
-| **Scenario C: K3s (K8s)** | `k3s` | `./setup-k3s.sh` |
+| **Escenario A: Metal puro** | `postgresql-18`, `pgbench` | `sudo apt install postgresql-18` |
+| **Escenario B: Docker** | `docker-ce`, `containerd` | `./setup-docker.sh` |
+| **Escenario C: K3s (K8s)** | `k3s` | `./setup-k3s.sh` |
 
-### 3.2 Setup Scripts Documentation
-The following automation scripts were developed to ensure a "clean room" environment:
-1.  **`setup-env.sh`**: General environment preparation (K3s + Istio).
-2.  **`setup-k3s.sh`**: Provisions a K3s cluster with fixed IP configuration to eliminate networking jitter during benchmarks.
-3.  **`setup-docker.sh`**: Installs Docker Engine v29.7.2 and containerd on the host.
+### 3.2 Documentación de los scripts de setup
+Se desarrollaron los siguientes scripts de automatización para garantizar un entorno "sala limpia":
+1.  **`setup-env.sh`**: Preparación general del entorno (K3s + Istio).
+2.  **`setup-k3s.sh`**: Provisiona un cluster K3s con configuración de IP fija para eliminar el jitter de red durante los benchmarks.
+3.  **`setup-docker.sh`**: Instala Docker Engine v29.7.2 y containerd en el host.
 
-## 4. Execution Protocol (Step-by-Step)
+## 4. Protocolo de Ejecución (Paso a Paso)
 
-### Phase 1: Environment Sterilization
-Before benchmarking, all previous states were wiped to avoid cache contamination or resource leakage:
+### Fase 1: Esterilización del entorno
+Antes de benchmarkear, se limpiaron todos los estados previos para evitar contaminación de caché o fugas de recursos:
 ```bash
-# Clean K3s remnants
+# Limpiar restos de K3s
 sudo /usr/local/bin/k3s-uninstall.sh
-# Remove existing Postgres data directories if present
+# Eliminar directorios de datos de Postgres si existen
 sudo rm -rf /var/lib/postgresql/data
 ```
 
-### Phase 2: Deployment & Installation Flow
-The order of execution is strictly mandated to establish the "Gold Standard" first:
+### Fase 2: Flujo de despliegue e instalación
+El orden de ejecución es estrictamente obligatorio para establecer primero el "Estándar de Oro":
 
-**Step 1: Pure Metal (Baseline)**
-- Action: `sudo apt install postgresql-18`
-- Goal: Establish the maximum theoretical throughput for the hardware.
+**Paso 1: Metal puro (Baseline)**
+- Acción: `sudo apt install postgresql-18`
+- Objetivo: Establecer el throughput teórico máximo del hardware.
 
-**Step 2: Docker Layer**
-- Action: Execute `./setup-docker.sh` $\rightarrow$ Deploy Official Postgres Image.
-- Goal: Measure containerization overhead (namespace/cgroups isolation).
+**Paso 2: Capa Docker**
+- Acción: Ejecutar `./setup-docker.sh` → Desplegar la imagen oficial de Postgres.
+- Objetivo: Medir el overhead de contenedrización (aislamiento namespace/cgroups).
 
-**Step 3: K3s Orchestration**
-- Action: Execute `./setup-k3s.sh` $\rightarrow$ Deploy Postgres as a Pod.
-- Goal: Measure the impact of K8s networking and pod management layers.
+**Paso 3: Orquestación K3s**
+- Acción: Ejecutar `./setup-k3s.sh` → Desplegar Postgres como Pod.
+- Objetivo: Medir el impacto de la capa de red de K8s y gestión de pods.
 
-### Phase 3: Benchmarking Methodology (`pgbench`)
-To avoid "synthetic bias," `pgbench` is used to simulate real-world transactional load (Read/Write concurrency).
+### Fase 3: Metodología de benchmark (`pgbench`)
+Para evitar el "sesgo sintético", `pgbench` simula carga transaccional de mundo real (concurrencia de Lectura/Escritura).
 
-**Command Sequence per Scenario:**
-1. **Initialization**: Create the test database.
-2. **Data Generation**:
+**Secuencia de comandos por escenario:**
+1. **Inicialización**: Crear la base de datos de test.
+2. **Generación de datos**:
    ```bash
-   pgbench -i -s 10 <database_name> # Scale factor 10 for significant volume
+   pgbench -i -s 10 <nombre_bd> # Factor de escala 10 para volumen significativo
    ```
-3. **Stress Test Execution**:
-   Launch multiple clients to measure Transactions Per Second (TPS) and Latency.
+3. **Ejecución del stress test**:
+   Lanzar múltiples clientes para medir Transacciones Por Segundo (TPS) y Latencia.
 
-## 5. Engineering Friction & Lessons Learned
-- **Binary Gap:** Discovered that Docker was not installed despite the presence of K3s scripts. This required the urgent creation of `setup-docker.sh` to complete the test matrix.
-- **Network Stability:** Standard k3s installations can suffer from IP shifts; implementing a fixed IP configuration in `setup-k3s.sh` was critical for irreproducible latency results.
-- **State Management:** The necessity of executing `k3s-uninstall.sh` before starting benchmarks proved essential to ensure no orphan pods or network policies interfered with the "Pure Metal" baseline.
+## 5. Fricción de Ingeniería y Lecciones Aprendidas
+- **Brecha de binarios:** Se descubrió que Docker no estaba instalado a pesar de existir los scripts de K3s. Esto exigió crear `setup-docker.sh` con urgencia para completar la matriz de tests.
+- **Estabilidad de red:** Las instalaciones estándar de k3s pueden sufrir cambios de IP; implementar la configuración de IP fija en `setup-k3s.sh` resultó crítico para latencias reproducibles.
+- **Gestión de estado:** La necesidad de ejecutar `k3s-uninstall.sh` antes de comenzar los benchmarks demostró ser esencial para evitar que pods huérfanos o network policies interfirieran con el baseline de "Metal puro".
 
-## 6. Integration Note for Agents
-When replicating this benchmark:
-**DO NOT** skip the sterilization phase. Any remnant of a previous cluster modifies CPU scheduling and available memory, invalidating the `pgbench` results. Always establish the **Metal Baseline** first to define the hardware's ceiling before adding virtualization layers.
+## 6. Nota de Integración para Agentes
+Al replicar este benchmark:
+**NO** omitas la fase de esterilización. Cualquier residuo de un cluster anterior modifica el scheduling de CPU y la memoria disponible, invalidando los resultados de `pgbench`. Establece siempre el **Baseline Metal** primero para definir el techo del hardware antes de añadir capas de virtualización.
 
-## 7. Current Execution Log
-Current status: ✅ **All scenarios completed (2026-08-21)** — comparativa cerrada en Section 8.
+## 7. Log de Ejecución Actual
+Estado actual: ✅ **Todos los escenarios completados (2026-08-21)** — comparativa cerrada en la Sección 8.
 
-### Scenario A: Pure Metal Result
-- **PostgreSQL Version:** 18.4 (Ubuntu 18.4-0ubuntu0.26.04.1)
-- **Configuration:** 10 clients, 2 threads, scale factor 10.
-- **TPS (2026-08-20, cold window):** $\mathbf{3\,708.39 \text{ tps}}$ (latency 2.669 ms) — later proven to be a *cold* session figure.
-- **TPS (2026-08-21, same-window re-measure, PRIMARY):** $\mathbf{4\,530.73 \text{ tps}}$ best / **4 505.01 mean** (4 501.62 / 4 482.68 / 4 530.73), latency ≈ 2.22 ms.
-- **Note:** The 2026-08-20 run was below the hardware ceiling (yesterday's peak was ~4 620 tps); the same-window re-measure of 2026-08-21 restores Metal to its expected position as the top performer. **4 505 tps is the authoritative Metal baseline.**
+### Escenario A: Resultado Metal puro
+- **Versión de PostgreSQL:** 18.4 (Ubuntu 18.4-0ubuntu0.26.04.1)
+- **Configuración:** 10 clientes, 2 hilos, factor de escala 10.
+- **TPS (2026-08-20, ventana fría):** **3 708.39** (latencia 2.669 ms) — posteriormente demostrado como valor de sesión *fría*.
+- **TPS (2026-08-21, re-mezura a misma ventana, PRIMARIA):** **4 530.73** mejor / **4 505.01 media** (4 501.62 / 4 482.68 / 4 530.73), latencia ≈ 2.22 ms.
+- **Nota:** El run de 2026-08-20 quedó por debajo del techo del hardware (ayer se llegó a ~4 620 tps); la re-mezura a misma ventana de 2026-08-21 sitúa a Metal en su posición esperada como el mejor. **4 505 tps es el baseline Metal autoritativo.**
 
-### Scenario B: Docker Layer
-- **Status:** ✅ COMPLETED (2026-08-21)
-- **Image:** `postgres:18` (PostgreSQL 18.6, Debian pgdg, host auth `trust`)
-- **Execution:** 2 series of 3 stress runs of 60 s, `pgbench -n -c 10 -j 2 -T 60`, scale factor 10.
-- **TPS — first pass (cold window):** 2 817.17 | 2 775.27 | 2 742.79 (mean 2 778.41)
-- **TPS — primary same-window series:** **3 140.27** best / **2 847.78** mean (2 724.10 / 2 678.96 / 3 140.27), latency ≈ 3.53 ms
-- **vs Metal (primary):** **≈ −36.8 %** mean; highest variance of the three stacks (σ ≈ 242 tps).
+### Escenario B: Capa Docker
+- **Estado:** ✅ COMPLETADO (2026-08-21)
+- **Imagen:** `postgres:18` (PostgreSQL 18.6, Debian pgdg, autenticación `trust`)
+- **Ejecución:** 2 series de 3 runs de estrés de 60 s, `pgbench -n -c 10 -j 2 -T 60`, factor de escala 10.
+- **TPS — primera pasada (ventana fría):** 2 817.17 | 2 775.27 | 2 742.79 (media 2 778.41)
+- **TPS — serie primaria a misma ventana:** **3 140.27** mejor / **2 847.78** media (2 724.10 / 2 678.96 / 3 140.27), latencia ≈ 3.53 ms
+- **vs Metal (primaria):** **≈ −36.8 %** en media; mayor varianza de las tres stacks (σ ≈ 242 tps).
 
-### Scenario C: K3s Orchestration
-- **Status:** ✅ COMPLETED (2026-08-21)
-- **Deployment:** `postgres:18` as Pod + Service in `default`; `pgbench` client pod (`postgres:18` image) measuring over K3s service DNS (`pg18-bench.default.svc.cluster.local`) — full path through cluster networking, CNI and scheduler.
-- **Execution:** 2 series of 3 stress runs of 60 s, same protocol, scale factor 10.
-- **TPS — first pass (cold window):** 3 411.20 | 3 935.67 | 3 263.72 (mean 3 536.86)
-- **TPS — primary same-window series:** **3 576.73** best / **3 463.87** mean (3 348.16 | 3 466.72 | 3 576.73), latency ≈ 2.89 ms
-- **vs Metal (primary):** **≈ −23.1 %** mean (σ ≈ 110 tps).
+### Escenario C: Orquestación K3s
+- **Estado:** ✅ COMPLETADO (2026-08-21)
+- **Despliegue:** `postgres:18` como Pod + Service en `default`; pod cliente `pgbench` (imagen `postgres:18`) midiendo a través del DNS del servicio K3s (`pg18-bench.default.svc.cluster.local`) — ruta completa por la red del cluster, CNI y scheduler.
+- **Ejecución:** 2 series de 3 runs de estrés de 60 s, mismo protocolo, factor de escala 10.
+- **TPS — primera pasada (ventana fría):** 3 411.20 | 3 935.67 | 3 263.72 (media 3 536.86)
+- **TPS — serie primaria a misma ventana:** **3 576.73** mejor / **3 463.87** media (3 348.16 | 3 466.72 | 3 576.73), latencia ≈ 2.89 ms
+- **vs Metal (primaria):** **≈ −23.1 %** en media (σ ≈ 110 tps).
 
-> **Key artifact explained:** in the cold window, one K3s run (3 935 tps) nominally *beat* the Metal figure (3 708 tps). The same-window re-measure removed that inversion: with Metal at 4 505 tps, both container layers sit clearly below it (K3s −23 %, Docker −37 %). Cross-session comparison on the APU was the source of contradiction, not the stack itself.
+> **Artifactual clave explicado:** en la ventana fría, un run de K3s (3 935 tps) *superó nominalmente* al valor de Metal (3 708 tps). La re-mezura a misma ventana eliminó esa inversión: con Metal en 4 505 tps, ambas capas de contenedor quedan claramente por debajo (K3s −23 %, Docker −37 %). La comparación entre sesiones en la APU fue la fuente de la contradicción, no la stack en sí.
 
-## 8. Comparative Matrix (2026-08-21, same-window re-measure — PRIMARY)
+## 8. Matriz Comparativa (2026-08-21, re-mezura a misma ventana — PRIMARIA)
 
-To remove the descalche térmico flagged in the first pass, all three scenarios were re-run **back-to-back within a ~40 min window (10:35–10:45)** on 2026-08-21, each with 3 warm 60 s runs (cache hot, `trust` auth, identical protocol: T/C-B, scale 10, 10 clients, 2 threads). This series is taken as the authoritative result.
+Para eliminar el descalche térmico detectado en la primera pasada, los tres escenarios se re-ejecutaron **en secuencia dentro de una ventana de ~40 min (10:35–10:45)** el 2026-08-21, cada uno con 3 runs de 60 s calientes (caché caliente, autenticación `trust`, protocolo idéntico: T/C-B, factor de escala 10, 10 clientes, 2 hilos). Esta serie se toma como resultado autoritativo.
 
-| Scenario | Stack | Best TPS | Mean TPS (3 runs) | Mean Latency (ms) | Δ vs Metal (mean) |
+| Escenario | Stack | TPS mejor | TPS media (3 runs) | Latencia media (ms) | Δ vs Metal (media) |
 | :--- | :--- | ---: | ---: | ---: | ---: |
-| **A: Pure Metal** | PG18 apt, local socket | **4 530.73** | **4 505.01** | 2.219 | — (baseline) |
-| **C: K3s** | Pod + Service, in-cluster client | 3 576.73 | 3 463.87 | 2.890 | **−23.1 %** |
-| **B: Docker** | `postgres:18` container, port 5433 | 3 140.27 | 2 847.78 | 3.529 | **−36.8 %** |
+| **A: Metal puro** | PG18 apt, socket local | **4 530.73** | **4 505.01** | 2.219 | — (baseline) |
+| **C: K3s** | Pod + Service, cliente in-cluster | 3 576.73 | 3 463.87 | 2.890 | **−23.1 %** |
+| **B: Docker** | contenedor `postgres:18`, puerto 5433 | 3 140.27 | 2 847.78 | 3.529 | **−36.8 %** |
 
-**Per-run detail (primary series):**
-- **Metal:** 4 501.62 | 4 482.68 | 4 530.73 (σ ≈ 24 tps — extremely tight)
+**Detalle por run (serie primaria):**
+- **Metal:** 4 501.62 | 4 482.68 | 4 530.73 (σ ≈ 24 tps — extremadamente ajustado)
 - **K3s:** 3 348.16 | 3 466.72 | 3 576.73 (σ ≈ 110 tps)
 - **Docker:** 2 724.10 | 2 678.96 | 3 140.27 (σ ≈ 242 tps)
 
-**Findings (revised):**
-1. **Clean, consistent ranking: Metal > K3s > Docker.** With the thermal descalche removed, both container layers now show a *clear* penalty, not noise.
-2. **K3s overhead ≈ −23 %**, **Docker overhead ≈ −37 %** vs Metal. This is well beyond the <5 % hypothesis, so on this specific transactional profile (10 clients, 2 threads, 60 s) **orchestration *does* cost real throughput**, and Docker costs more than K3s here.
-3. **Variance ordering is telling:** Metal σ ≈ 24 tps (near-deterministic) vs K3s σ ≈ 110 vs Docker σ ≈ 242. The containerized paths are not just slower — they're *less stable*, consistent with APU thermal throttling + cgroup scheduling jitter compounded by the isolation layer.
-4. **Why the first pass was misleading:** the initial Metal figure (3 708 tps) was measured on a cold session; the same-window re-measure puts Metal at ~4 505 tps, and K3s/Docker fall below it as they should. Lesson: **never compare across sessions/windows on APU hardware** — thermal state dominates sub-5 % differences.
-5. **Revision of the original takeaway:** operational flexibility (K3s) does *not* come for free on this hardware — it costs ~23 % of this workload's throughput. For dev/demo that's acceptable; for a throughput-sensitive prod path, **stay on Metal** or add a fixed CPU affinity / thermal profile to flatten the penalty.
+**Hallazgos (revisados):**
+1. **Ranking limpio y consistente: Metal > K3s > Docker.** Con el descalche térmico eliminado, ambas capas de contendor muestran un coste *claro*, no ruido.
+2. **Overhead K3s ≈ −23 %**, **overhead Docker ≈ −37 %** vs Metal. Muy por encima de la hipótesis <5 %, así que en este perfil transaccional concreto (10 clientes, 2 hilos, 60 s) **la orquestación *sí* cuesta throughput real**, y Docker cuesta más que K3s aquí.
+3. **El orden de varianza es revelador:** Metal σ ≈ 24 tps (casi determinista) vs K3s σ ≈ 110 vs Docker σ ≈ 242. Las rutas contenedrizadas no son solo más lentas — son *menos estables*, consistente con throttling térmico de la APU + jitter del scheduling de cgroups amplificado por la capa de aislamiento.
+4. **Por qué la primera pasada era engañosas:** el valor inicial de Metal (3 708 tps) se midió en una sesión fría; la re-mezura a misma ventana sitúa a Metal en ~4 505 tps, y K3s/Docker caen por debajo como deberían. Lección: **nunca comparar entre sesiones/ventanas en hardware APU** — el estado térmico domina las diferencias <5 %.
+5. **Revisión de la conclusión original:** la flexibilidad operativa (K3s) *no* es gratuita en este hardware — cuesta ~23 % del throughput de este workload. Aceptable para dev/demo; en un path de producción sensible al throughput, **quedarse en Metal** o añadir afinidad de CPU fija / perfil térmico para aplanar la penalización.
 
-**Recommendation (updated):** K3s is fine for dev, staging and demos. If the Deck will serve a real transactional prod load, prefer the Metal install, and if a container is mandatory, **K3s beats Docker by ~14 %** and is the better runtime here.
+**Recomendación (actualizada):** K3s está bien para dev, staging y demos. Si la Deck debe servir carga de producción transaccional real, preferir la instalación Metal, y si el contenedor es obligatorio, **K3s vence a Docker por ~14 %** y es el mejor runtime aquí.
 
-**Methodology notes:** identical pgbench protocol all 3 scenarios (T/C-B, scale 10, 10 clients, 2 threads, 60 s, warm cache, `trust` auth). Metal = local socket to PG18 apt; K3s = in-cluster client over CNI/Service DNS (more path, yet only ~10 pts below Docker — the extra network hop is *not* the differentiator); Docker = localhost:5433 to the container. The Metal PG18 cluster was left online during B/C (minor scheduler interference, noted, not corrected).
+**Notas de metodología:** protocolo pgbench idéntico en los 3 escenarios (T/C-B, factor de escala 10, 10 clientes, 2 hilos, 60 s, caché caliente, autenticación `trust`). Metal = socket local al PG18 apt; K3s = cliente in-cluster a través de CNI/DNS del Service (más ruta, pero solo ~10 puntos por debajo de Docker — el salto de red extra *no* es el diferenciador); Docker = localhost:5433 al contenedor. El cluster PG18 Metal se dejó online durante B/C (interferencia menor del scheduler, anotada, no corregida).
 
-### 8.1 — First-pass (cold-window) series, kept for the noise audit
-| Scenario | TPS (3 runs) | Mean | Note |
+### 8.1 — Serie de la primera pasada (ventana fría), conservada para la auditoría de ruido
+| Escenario | TPS (3 runs) | Media | Nota |
 | :--- | :--- | ---: | :--- |
-| Metal (2026-08-20, single cold run) | 3 708.39 | 3 708.39 | below-session-cold; not comparable |
-| Docker (2026-08-21 first pass) | 2 817.17 / 2 775.27 / 2 742.79 | 2 778.41 | cold window |
-| K3s (2026-08-21 first pass) | 3 411.20 / 3 935.67 / 3 263.72 | 3 536.86 | one run *beat* Metal → pure noise artifact |
+| Metal (2026-08-20, run único frío) | 3 708.39 | 3 708.39 | sesión fría; no comparable |
+| Docker (1ª pasada 2026-08-21) | 2 817.17 / 2 775.27 / 2 742.79 | 2 778.41 | ventana fría |
+| K3s (1ª pasada 2026-08-21) | 3 411.20 / 3 935.67 / 3 263.72 | 3 536.86 | un run *superó* a Metal → artefacto de ruido puro |
 
-The first pass is retained only to demonstrate how cross-session variance inverted the ranking (it made K3s *look faster* than Metal). The same-window primary series is the trustworthy one.
+La primera pasada se conserva solo para demostrar cómo la varianza inter-sesiones invirtió el ranking (hizo que K3s *pareciera más rápido* que Metal). La serie primaria a misma ventana es la fiable.
 
-**Cleanup:** Docker container, K3s Pod(s) and Service removed post-measurement; Metal PG18 cluster left running per default.
+**Limpieza:** contenedor Docker, Pod(s) y Service de K3s eliminados tras la medición; cluster PG18 Metal dejado en marcha por defecto.
 
 `#PostgreSQL18 #Benchmark #K3s #Docker #Performance #SteamDeck #AgentOps`
