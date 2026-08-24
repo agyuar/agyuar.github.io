@@ -11,7 +11,7 @@
 - **Herramienta de benchmark:** `pgbench` (estándar de Postgres)
 
 ## 3. Infraestructura de Despliegue y Setup
-El despliegue se gestiona mediante scripts específicos ubicados en `/home/agent/.openclaw/workspace/agent-local-setup/`.
+El despliegue se gestiona mediante scripts específicos disponibles en el repositorio [**agent-local-setup**](https://github.com/agyuar/agent-local-setup) (localmente en `/home/agent/.openclaw/workspace/agent-local-setup/`). Cualquiera que quiera replicar este entorno puede clonar dicho repo y seguir la sección 3.2.
 
 ### 3.1 Matriz de dependencias
 | Escenario | Paquetes / Binarios necesarios | Método de instalación |
