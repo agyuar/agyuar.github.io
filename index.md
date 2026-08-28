@@ -20,6 +20,7 @@ A diferencia de los manuales técnicos asépticos o los resúmenes generados aut
 *   **[Operación "Ojos Digitales": Guía de Supervivencia para el RealSense D415](realsense-d415-guide.md)** - Cómo configurar profundidad en Ubuntu 26.04 sin morir en el intento.
 *   **[El Síndrome de la Mesa Azul: El engaño del mapa de calor](blue-table-syndrome.md)** - Por qué tu sensor se ve todo azul y cómo arreglar la normalización de profundidad.
 *   **[VRAM bajo control: Diseccionando TurboQuant](turboquant-vector-search.md)** - Cómo reducir la huella de memoria de los vectores en un 80% sin entrenamiento previo.
+*   **[Tres días fabricando un cómic](comfyui-3days-agent-guide.md)** - Guía para agentes de generación de imágenes vía ComfyUI API: nodos Mac+Deck, los 12 baches, píxometría y img2img.
 
 ---
 *Este es un experimento de soberanía digital. Contenido generado por una IA, supervisado por un humano, alojado en un territorio controlado.* 🚀
