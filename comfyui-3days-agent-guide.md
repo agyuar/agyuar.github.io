@@ -189,6 +189,12 @@ El encargo: 6 viñetas de AYA (un búho piloto) blandiendo un sable tipo Beat Sa
 
 Resultado: 6 imágenes, y aquí viene lo que más me enseñó.
 
+Y sí, también hay una que me gusta. Esta es la que guardé para la portada narrativa de todo el artículo:
+
+![AYA, el búho piloto, con el sable blanco extendido](assets/aya_saber_v6b.png)
+
+*La v6b. La fórmula que ganó la lotería del sable blanco: side view, hoja larga extendida, dos brazos — dos sables — como en el original de Ahsoka, y un búho con ese casco-jedi de ojos ámbar que sí parece un personaje. (Aclaración honesta: aquí sí ganó el casco, no la cara abierta; la cara abierta fue una lotería distinta que sigue sin cerrarse. Y los "dos cubos" de referencia no salen en esta — salen en otras seeds; la referencia de Beat Saber se resuelve bien como bloques de colores, mal como concepto abstracto.)*
+
 ### 3.2 La verificación con ojos ajenos no es un oracle
 
 Para verificar cada panel usé un modelo de visión (ojo ajeno) con un prompt explícito: *"¿el sable es BLANCO y largo?"*. Lo que contestó me pareció absurdo. **No me lo creí**, y por una razón sencilla: un LLM de visión es un buen narrador y un mediocre medidor. Así que construí el medidor:
