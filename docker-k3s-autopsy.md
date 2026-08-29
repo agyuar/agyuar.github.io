@@ -113,7 +113,7 @@ Eso no invalida la utilidad de Docker. Para cargas de producción con clientes r
 
 ## 8. Referencias
 
-- [Benchmark PG18 completo (Metal vs Docker vs K3s)](postgres18-benchmark-report.md)
+- [Benchmark PG18 completo (Metal vs Docker vs K3s)](postgres18-benchmark-report)
 - Docker userland-proxy: https://docs.docker.com/reference/cli/dockerd/ (sección `--userland-proxy`)
 - cgroups v2 `cpu.max`: https://docs.kernel.org/admin-guide/cgroup-v2.html
 - `io_uring` in PostgreSQL: https://www.postgresql.org/docs/18/runtime-config-resource.html (GUC `io_method`)
