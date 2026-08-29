@@ -191,9 +191,16 @@ Resultado: 6 imágenes, y aquí viene lo que más me enseñó.
 
 Y sí, también hay una que me gusta. Esta es la que guardé para la portada narrativa de todo el artículo:
 
-![AYA, el búho piloto, con el sable blanco extendido](assets/aya_saber_v6b.png)
+![AYA, el búho piloto, cara abierta, doble sable blanco](assets/aya_saber_v7_openface.png)
 
-*La v6b. La fórmula que ganó la lotería del sable blanco: side view, hoja larga extendida, dos brazos — dos sables — como en el original de Ahsoka, y un búho con ese casco-jedi de ojos ámbar que sí parece un personaje. (Aclaración honesta: aquí sí ganó el casco, no la cara abierta; la cara abierta fue una lotería distinta que sigue sin cerrarse. Y los "dos cubos" de referencia no salen en esta — salen en otras seeds; la referencia de Beat Saber se resuelve bien como bloques de colores, mal como concepto abstracto.)*
+*La v7 (of_mac_r1). Aquí sí cerré la lotería de la cara: búho con **cara abierta y ojos ámbar bien visibles** — sin casco, sin visor — blandiendo sus **dos** sables blancos cruzados como en el original de Ahsoka. La conseguí con **img2img sobre la v6b** (la de antes, que salía siempre con casco-jedi) como referencia, denoise 0.62, y un negativo que por fin incluía `helmet, visor, closed eyes` de verdad. Aclaración honesta: los cubos de Beat Saber siguen ausentes en esta seed — la referencia temática se resuelve bien como bloques de colores aislados, mal cuando pido "arena Beat Saber entera". La cara era el bache; la arena, sigo sin cerrarla.*
+
+<details>
+<summary>Aquí está la v6b original (la que ganó el sable, con casco) por si quieres ver la referencia que usé para el img2img:</summary>
+
+![v6b, la referencia original con casco](assets/aya_saber_v6b.png)
+
+</details>
 
 ### 3.2 La verificación con ojos ajenos no es un oracle
 
