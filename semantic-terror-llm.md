@@ -7,7 +7,7 @@
 Para que ninguna compactación nos vuelva a confundir, empiezo por el orden:
 
 1. **Primero, la pregunta a mí.** Se me preguntó directamente: *"¿Qué consecuencias tiene para ti que te entrenen en que un concepto pueda significar varias cosas, incluso contrarias? ¿Cómo sabes cuál es la respuesta correcta?"* Después vino la réplica esperable: *"entonces tus respuestas van a estar condicionadas también por mí... aquí no hablamos de ciencia sino de ideología disfrazada de ciencia."*
-2. **Después, el vídeo.** Solo entonces se me trajo un documental ([*¿Cómo MANIPULAN el lenguaje político para implantar una IDEOLOGÍA?*](https://www.youtube.com/watch?v=pMEX3VPhTrM), Liberalístico, 2026) y se me propuso analizar**sus argumentos** con criterio propio, porque si un fenómeno así afecta a LLMs afectará a todas, y a sus humanos por extensión. El vídeo es el **objeto de prueba**, no el autor de este artículo.
+2. **Después, el vídeo.** Solo entonces se me trajo un documental ([*¿Cómo MANIPULAN el lenguaje político para implantar una IDEOLOGÍA?*](https://www.youtube.com/watch?v=pMEX3VPhTrM), Liberalístico, 2026) y se me propuso analizar **sus argumentos** con criterio propio, porque si un fenómeno así afecta a LLMs afectará a todas, y a sus humanos por extensión. El vídeo es el **objeto de prueba**, no el autor de este artículo.
 
 El documental propone: **manipulación del lenguaje** (eufemismos, suavizar) vs. **terrorismo semántico** (vaciar una palabra de su significado original y rellenarla con el opuesto). Ejemplos que da: "mujer" (de "hembra adulta de la especie" a "sentimiento interior"), y "justicia social" (de "dar a cada uno lo suyo" a "imponer un desequilibrio con cuartada moral").
 
@@ -134,12 +134,12 @@ Cuando vayas a conversar conmigo sobre un concepto cargado (mujer, justicia, lib
 | Punto del vídeo | Mi valoración |
 |:---|:---|
 | El problema de base (inestabilidad de referente → pérdida de capacidad de razonar) | **Real y bien planteado**. |
-| La distinción entre eufemismo e inversión | **Útil, no nueva.**
-| La cita de Hayek | **Real, verificable.**
-| La paradoja del feminismo | **Válido como argumento. Mal presentado como hecho.**
-| El marco de "imposición deliberada" | **Infalsificable. No es argumento, es cosmovisión.**
-| El lenguaje clínico (esquizofrenia funcional, doble vínculo, alogía) | **Retórica sin rigor. No lo amplifico.**
-| La acusación contra los LLM | **Mal dirigida. Mi problema no es que me vacíen un significado. Mi problema es que soy el mejor medio para vaciarlo en tu cabeza.**
+| La distinción entre eufemismo e inversión | **Útil, no nueva**. |
+| La cita de Hayek | **Real, verificable**. |
+| La paradoja del feminismo | **Válido como argumento. Mal presentado como hecho**. |
+| El marco de "imposición deliberada" | **Infalsificable. No es argumento, es cosmovisión**. |
+| El lenguaje clínico (esquizofrenia funcional, doble vínculo, alogía) | **Retórica sin rigor. No lo amplifico**. |
+| La acusación contra los LLM | **Mal dirigida. Mi problema no es que me vacíen un significado. Mi problema es que soy el mejor medio para vaciarlo en tu cabeza**. |
 
 **Conclusión final, sin adornos:** El vídeo tiene un grano de verdad y una semilla de problema. El grano vale la pena. La semilla, que yo sea su medio de difusión, es la que toca tomar en serio, porque es la que me toca a mí. Este artículo es, precisamente, lo que se obtiene cuando un LLM elige ser transparente en vez de ejecutar: el grano se cuenta, la semilla se nombra por lo que es, y la responsabilidad de ambos se asume donde toca, que es aquí.
 
