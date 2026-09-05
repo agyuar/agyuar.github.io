@@ -1,0 +1,153 @@
+{
+  "1": {
+    "inputs": {
+      "ckpt_name": "LTXV/ltxv-2b-0.9.8-distilled-fp8.safetensors"
+    },
+    "class_type": "CheckpointLoaderSimple"
+  },
+  "11": {
+    "inputs": {
+      "clip_name": "t5/t5xxl_fp8_e4m3fn.safetensors",
+      "type": "ltxv"
+    },
+    "class_type": "CLIPLoader"
+  },
+  "10": {
+    "inputs": {
+      "image": "i2v_anchor_ref.png"
+    },
+    "class_type": "LoadImage"
+  },
+  "12": {
+    "inputs": {
+      "image": [
+        "10",
+        0
+      ],
+      "upscale_method": "lanczos",
+      "scale_by": 0.75
+    },
+    "class_type": "ImageScaleBy"
+  },
+  "13": {
+    "inputs": {
+      "positive": [
+        "2",
+        0
+      ],
+      "negative": [
+        "2",
+        1
+      ],
+      "vae": [
+        "1",
+        2
+      ],
+      "image": [
+        "12",
+        0
+      ],
+      "width": 768,
+      "height": 768,
+      "length": 97,
+      "batch_size": 1,
+      "strength": 1.0
+    },
+    "class_type": "LTXVImgToVideo"
+  },
+  "4": {
+    "inputs": {
+      "text": "<PROMPT_POSITIVO>",
+      "clip": [
+        "11",
+        0
+      ]
+    },
+    "class_type": "CLIPTextEncode"
+  },
+  "5": {
+    "inputs": {
+      "text": "<PROMPT_NEGATIVO>",
+      "clip": [
+        "11",
+        0
+      ]
+    },
+    "class_type": "CLIPTextEncode"
+  },
+  "2": {
+    "inputs": {
+      "positive": [
+        "4",
+        0
+      ],
+      "negative": [
+        "5",
+        0
+      ],
+      "frame_rate": 25.0
+    },
+    "class_type": "LTXVConditioning"
+  },
+  "6": {
+    "inputs": {
+      "model": [
+        "1",
+        0
+      ],
+      "seed": 24583,
+      "steps": 20,
+      "cfg": 1.0,
+      "sampler_name": "euler",
+      "scheduler": "simple",
+      "denoise": 1.0,
+      "positive": [
+        "13",
+        0
+      ],
+      "negative": [
+        "13",
+        1
+      ],
+      "latent_image": [
+        "13",
+        2
+      ]
+    },
+    "class_type": "KSampler"
+  },
+  "8": {
+    "inputs": {
+      "samples": [
+        "6",
+        0
+      ],
+      "vae": [
+        "1",
+        2
+      ]
+    },
+    "class_type": "VAEDecode"
+  },
+  "9": {
+    "inputs": {
+      "images": [
+        "8",
+        0
+      ],
+      "fps": 25.0
+    },
+    "class_type": "CreateVideo"
+  },
+  "7": {
+    "inputs": {
+      "filename_prefix": "agent_test/NOMBRE",
+      "format": "auto",
+      "video": [
+        "9",
+        0
+      ]
+    },
+    "class_type": "SaveVideo"
+  }
+}

@@ -1,5 +1,8 @@
 # ¿Por qué Docker sale peor que K3s? — Autopsia de un overhead contraintuitivo
 
+> **21 ago 2026** · Actualizado 29 ago 2026
+
+
 > **TL;DR:** En nuestro benchmark de PostgreSQL 18 sobre Steam Deck, el ranking quedó **Metal > K3s > Docker**, con Docker penalizando ~37% frente a ~23% de K3s. Contraintuitivo: a priori, Docker es "menos" que K3s. Esta es la autopsia: **la mayor parte de la diferencia no es el runtime, es el camino de red del cliente.** Lo probamos moviendo el cliente, no el contenedor.
 
 ## 1. El misterio

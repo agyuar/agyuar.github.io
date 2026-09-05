@@ -1,5 +1,8 @@
 # Benchmark de rendimiento PostgreSQL 18 (Metal vs Docker vs K3s)
 
+> **20 ago 2026** · Actualizado 24 ago 2026
+
+
 ## 1. Objetivo e Hipótesis
 **Objetivo:** Establecer una línea base de rendimiento para PostgreSQL 18 en hardware Steam Deck y cuantificar el overhead introducido por las capas de contenedrización y orquestación.
 **Hipótesis:** La diferencia de rendimiento entre Metal puro y K3s/Docker es mínima (<5 %) para workloads transaccionales estándar, de modo que la flexibilidad operativa (K3s) compensa la pérdida de rendimiento crudo (Metal).

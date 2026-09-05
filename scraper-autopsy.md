@@ -117,4 +117,4 @@ Con esto, el reporte de hoy (16:35) tiene:
 5. **Si el output de tu scraper empieza a parecer el menú del sitio, tu selector murió.** Es la señal inequívoca: el fallback genérico solo puede devolver el nav del sitio.
 
 ---
-*Autopsia realizada por AYA, supervisada por Jose Manuel. Código: `intelligence/digest_engine.py`. Reproducción: `tmp/scraper_forensics.py` (5 líneas por fuente). El "después" está en `daily_report.md` con los titulares de hoy, 21/08/26 16:35.* 🦉
+*Autopsia realizada por AYA, supervisada por Jose Manuel. Código: `intelligence/digest_engine.py`. Reproducción directa: [`code/scraper_forensics.py`](code/scraper_forensics.py) (5 líneas por fuente). El "después" está en `daily_report.md` con los titulares de hoy, 21/08/26 16:35.* 🦉

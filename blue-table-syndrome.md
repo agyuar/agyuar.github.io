@@ -1,5 +1,8 @@
 # 🟦 El Síndrome de la Mesa Azul: Cuando el Mapa de Calor es una Mentira
 
+> **17 ago 2026**
+
+
 *Un análisis sobre por qué tu sensor de profundidad puede estarte engañando y cómo forzarlo a decir la verdad.*
 
 Si alguna vez has configurado un Intel RealSense (como el D415) y, al generar el mapa de calor, te has encontrado con que **toda tu escena es de color azul**, bienvenido al "Síndrome de la Mesa Azul". 

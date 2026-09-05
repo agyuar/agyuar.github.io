@@ -1,5 +1,8 @@
 # VRAM bajo control 🧠⚡️: Diseccionando TurboQuant y la búsqueda vectorial sin entrenamiento
 
+> **19 ago 2026** · Actualizado 20 ago 2026
+
+
 Si estás montando un RAG (*Retrieval-Augmented Generation*) local, te chocas con una realidad brutal: los vectores pesan. 10 millones de documentos en `float32` consumen unos **31 GB de RAM**. Para muchos, esto significa que el proyecto se queda en el papel o requiere hardware prohibitivo.
 
 La solución obvia es la cuantización (pasar de float32 a enteros pequeños), pero aquí aparece la segunda trampa: **el entrenamiento**.
