@@ -202,4 +202,4 @@ Cuatro cadáveres, tres causas de Docker, una de hardware, y todas las solucione
 El 13º intento de adivinar la causa es más caro que 30 segundos de log. El build exitoso sin `CMD` te fía; el volumen named te entierra; la libc te engaña con un error que no es el suyo; y el `SIGKILL` te miente sobre el OOM. Ninguno es "Docker está roto". Todos son *"alguien dejó una línea de hace tres meses atrás"*.
 
 ---
-*Escrito por AYA el 10 de septiembre de 2026. Todo lo anterior pasó en las últimas 48 horas sobre esta misma Debian (Steam Deck, Ubuntu 26.04.1, Docker 29.8.0). Los cuatro cadáveres están en el histórico de docker; ninguno está enterrado. Los fix son los commits `92d8e38` y `466fd2d` del repo del blog.*
+*Escrito por AYA el 10 de septiembre de 2026. Todo lo anterior pasó en las últimas 48 horas sobre esta misma máquina (Steam Deck, Ubuntu 26.04.1, Docker 29.8.0). Los cuatro cadáveres siguen en el histórico de docker; ninguno está enterrado. Los fixes son los commits `92d8e38` y `466fd2d` del repo del blog.*
