@@ -62,6 +62,74 @@ python3 bench_llm.py --base http://192.168.21.31 \
   --out gemma4-12b-viki.csv
 ```
 
+Y esto es lo que hace por dentro — las dos partes del código que importan para leer la sección 4 que viene (del `one()` del script):
+
+```python
+def one(base, model, n_ctx, max_tokens, filler, think=False):
+    body = json.dumps({
+        "model": model,
+        "messages": [{"role": "user",
+                      "content": filler + " Responde EXACTAMENTE: " + "OK " * min(20, max_tokens//2)}],
+        "max_tokens": max_tokens, "stream": True, "temperature": 0,
+    })
+    # Ollama (y OpenAI-compat) acepta "think": bool en el body — lo inyectamos solo en endpoints locales
+    if base.endswith("21.31") or "127.0.0.1" in base:
+        body = json.loads(body); body["think"] = think
+        body = json.dumps(body)
+
+    url = base.rstrip("/") + "/v1/chat/completions"
+    req = urllib.request.Request(url, data=body.encode(),
+                                 headers={"Content-Type": "application/json"})
+    t0 = time.perf_counter(); ttft_content = None; ttft_any = None
+    cnt = 0; last_usage = None
+    with urllib.request.urlopen(req, timeout=900) as r:
+        buf = b""
+        while True:
+            chunk = r.read(1024)
+            if not chunk: break
+            buf += chunk
+            while b"\n" in buf:
+                line, buf = buf.split(b"\n", 1)
+                line = line.decode().strip()
+                if not line.startswith("data:"): continue
+                data = line[5:].strip()
+                if data == "[DONE]": break
+                try: ev = json.loads(data)
+                except Exception: continue
+                if ev.get("usage"): last_usage = ev["usage"]
+                ch = ev.get("choices") or [{}]
+                if ch:
+                    d = ch[0].get("delta") or {}
+                    if d.get("reasoning"): ttft_any = ttft_any or (time.perf_counter()-t0)
+                    if d.get("content"):
+                        if ttft_content is None: ttft_content = time.perf_counter()-t0
+                        cnt += 1
+    wall = time.perf_counter() - t0
+    out = (last_usage or {}).get("completion_tokens", cnt)
+    return {"model": model, "n_ctx_target": n_ctx,
+            "prompt_tokens": (last_usage or {}).get("prompt_tokens"),
+            "completion_tokens": out, "content_tokens": cnt,
+            "ttft_any_token_s": round(ttft_any,2) if ttft_any else None,
+            "ttft_content_s": round(ttft_content,2) if ttft_content else None,
+            "wall_s": round(wall,2),
+            "content_tok_per_s": (round(cnt / max(wall - (ttft_content or 0), 0.001), 2) if cnt else None)}
+```
+
+Y el generador del filler — **la línea que provocó el Bug B** (el slice que truncaba el prompt de `ctx~16000` a ~16k por casualidad de la aritmética, no por diseño):
+
+```python
+FILLER = ("El asistente AYA esta documentando una autopsia tecnica de un dev server: el proceso de " * 30)
+
+# En main():
+for n in [int(x) for x in a.ctxs.split(",")]:
+    filler = (FILLER * (int(n/0.75) // 40 + 1))[:max(40, int(n/0.75) * 40)]
+    #       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    #       para n=16000 -> 36368 palabras ~ 16.4k tokens reales, no 16k exactos.
+    #       para n=1000  -> 9095 palabras  ~ 12.1k tokens reales, no 1k.
+```
+
+El resto del script (`main`, `argparse`, el CSV de salida) es rutina y se queda en el repo de experiments.
+
 ## 4. Los tres bugs (la parte que nadie te cuenta de un blog post de benchmark)
 
 Este post existe en parte porque un primer intento **falló tres veces de formas distintas** y yo mismo casi lo publicaba con las cifras rotas.
@@ -147,7 +215,7 @@ El swap de la Deck (4 GiB) absorbió el pico **pero no el proceso**: el kernel e
 ## 8. Réplicas
 
 * **Datos crudos:** `experiments/bench/gemma4-12b-{deck,viki}.csv` + logs `.log`.
-* **Script de medida:** `experiments/bench/bench_llm.py` (client SSE, 3 medidas: TTFC, decode, wall).
+* **Script de medida:** `experiments/bench/bench_llm.py` (client SSE, 3 medidas: TTFC, decode, wall). El código ilustrativo está inline en la sección 3; el archivo completo vive en el repo de experiments, no en este.
 * **Cifras de pesos:** `ollama show gemma4:12b --verbose` → `parameter_size: 11.9B`, `quantization_level: Q4_K_M`, `size: 7,556,508,396 B`.
 * **Prompt_tokens reales:** `POST /api/generate` con `num_predict=1` → `prompt_eval_count` reportado.
 
