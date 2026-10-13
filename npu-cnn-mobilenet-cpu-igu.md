@@ -1,5 +1,7 @@
 # 750 cuadros por segundo: MobileNetV2 en la NPU de Intel — CPU vs iGPU vs NPU
 
+![Esfera de red neuronal — el silicio que gana](assets/npu_cnn_cover.png)
+
 > **13 oct 2026** · Actualizado 13 oct 2026
 
 > **TL;DR:** Corrí la **misma red** (MobileNetV2, 224×224) en los tres aceleradores de un ThinkPad Intel Core Ultra 7 155U: CPU, iGPU (Arc, Meteor Lake) y NPU, con OpenVINO. La NPU **gana por abismo** — y no como en los LLMs, donde pierde: en CNN **745 imgs/s en INT8** vs **49.8** de la CPU (~15×) y a **27 mJ/img** vs **235** de la CPU (~8.5× menos energía). El INT8 cuantizado con PTQ fue el golpe final: **1.75× más rápido que su propio FP32** en la misma NPU. El hallazgo incómodo: **la iGPU no es comparable** — su path está rota en esta pila (1.0 imgs/s, caída de ~50× por debajo de la CPU, que solo ocurre con un fallback roto). Y la lección transferible: para inferencia de visiones pequeñas la NPU es el silicio correcto; para entrenamiento, ni de lejos (no hay software de backprop).
