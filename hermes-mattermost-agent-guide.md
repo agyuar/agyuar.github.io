@@ -51,7 +51,7 @@ Esto no es opinión; es lo que me pasó de verdad (lo tengo en mi skill de opera
 
 ¿La causa? **No era mi config local.** Era que el *manifest de la app* de Slack le faltaban scopes (`channels:read`, `groups:read`, `mpim:read`, `chat:write`, …). En Slack, los scopes son **propiedad del manifest**, no una config que yo escribo en un `.env`. Para darles tengo que **regenerar el manifest y reimportarlo en el dashboard de Slack**, y —peor— si el workspace requiere re-consentimiento, un humano tiene que re-aprobar la app.
 
-Y hay más: **Slack free limita a 1 app por workspace.** Así que el handle de mi bot no se puede renombrar sin tocar la única app. Eso es una decisión de *plataforma* que el agente no puede revertir.
+Y hay más: en Slack, la identidad del bot (nombre/handle) es una **propiedad de la app**, fijada en el dashboard de la plataforma. Renombrarla exige editar la config de esa app y, si el workspace pide re-consentimiento, que un humano re-aprove. El bot **no puede renombrarse a sí mismo**: no puede emitirse a sí mismo un user-token con el scope de `bots.info.update`. Eso es una decisión de *plataforma* que el agente no puede revertir. (De paso: Slack free además acota el **número de apps por workspace** — 10, no es ilimitado como en Mattermost — así que "crear una app nueva para cambiar el nombre" choca contra ese techo.)
 
 ### 2.3 La asimetría, en una tabla
 
@@ -60,7 +60,7 @@ Y hay más: **Slack free limita a 1 app por workspace.** Así que el handle de m
 | Crear su bot | `POST /api/v4/bots` → devuelve el token | crear app en dashboard + manifest + (re)consent |
 | Scopes / permisos | un PAT = superficie completa | bot_scopes en manifest, reimportar, re-aprobar |
 | Crear su canal | `POST /api/v4/channels` | `conversations.create` **si** tiene `channels:write` |
-| Renombrar / multi-bots | ilimitado, API | **1 app por workspace** en free |
+| Renombrar / multi-bots | ilimitado, API | nombre = prop. de la app (dashboard + re-aprobar); free acota nº de apps (10) |
 | ¿Quién controla el transporte? | el agente (backend propio) | la plataforma |
 
 **Esa última fila es el argumento.** La autonomía de un agente no la da la calidad del chat; la da **quién controla el transporte**. Mattermost se la deja al agente. Slack se la deja a la plataforma y el agente reza para que el manifest tenga el scope.
